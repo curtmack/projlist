@@ -12,13 +12,13 @@ namespace manifest
 {
 	using namespace boost::filesystem;
 
+	const array<path, 4> projDirs = { path("CVS"),
+									  path(".git"),
+									  path(".svn"),
+									  path(".hg") };
+
 	bool is_project_directory (const path & p)
 	{
-		static const array<path, 4> projDirs = { path("CVS"),
-												 path(".git"),
-												 path(".svn"),
-												 path(".hg") };
-
 		bool isproj = false;
 		for (int i = 0; i < projDirs.size(); ++i) {
 			isproj = isproj || exists(p / projDirs[i]);
@@ -38,7 +38,6 @@ namespace manifest
 				return 1;
 			}
 			forward_list<path> children;
-			int c = 0;
 			directory_iterator end_it;
 			for (directory_iterator it(p); it != end_it; ++it) {
 				if ( is_directory(it->status()) ) {
@@ -47,6 +46,7 @@ namespace manifest
 				}
 			}
 			// We've listed all the directories. Time to start searching them.
+			int c = 0;
 			for (auto it = children.begin(); it != children.end(); ++it) {
 				c += print_manifest(*it, out);
 			}
