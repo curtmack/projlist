@@ -13,15 +13,16 @@ namespace manifest
 	using namespace boost::filesystem;
 
 	const array<path, 4> projDirs = { path("CVS"),
-									  path(".git"),
-									  path(".svn"),
-									  path(".hg") };
+	                                  path(".git"),
+	                                  path(".svn"),
+	                                  path(".hg") };
 
 	bool is_project_directory (const path & p)
 	{
 		bool isproj = false;
 		for (int i = 0; i < projDirs.size(); ++i) {
-			isproj = isproj || exists(p / projDirs[i]);
+			isproj = exists(p / projDirs[i]);
+			if (isproj) break;
 		}
 
 		return isproj;
