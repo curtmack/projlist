@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <array>
+#include <queue>
 #include <iostream>
 #include <forward_list>
 #include <fstream>
@@ -6,21 +8,20 @@
 
 #include <boost/filesystem.hpp>
 
-using namespace std;
-
 namespace manifest
 {
+	using namespace std;
 	using namespace boost::filesystem;
 
-	const array<path, 4> projDirs = { path("CVS"),
+	const array<path, 4> projDirs { { path("CVS"),
 	                                  path(".git"),
 	                                  path(".svn"),
-	                                  path(".hg") };
+	                                  path(".hg") } };
 
 	bool is_project_directory (const path & p)
 	{
 		bool isproj = false;
-		for (int i = 0; i < projDirs.size(); ++i) {
+		for (size_t i = 0; i < projDirs.size(); ++i) {
 			isproj = exists(p / projDirs[i]);
 			if (isproj) break;
 		}
@@ -28,41 +29,74 @@ namespace manifest
 		return isproj;
 	}
 
-	int print_manifest (const path & p, ostream & out)
-	{
-		if (!exists(p)) {
-			return 0;
-		} else {
-			// For project directories, output and escape immediately
-			if ( is_project_directory(p) ) {
-				out << ( p.native() ) << endl;
-				return 1;
-			}
-			forward_list<path> children;
-			directory_iterator end_it;
-			for (directory_iterator it(p); it != end_it; ++it) {
-				if ( is_directory(it->status()) ) {
-					// Add to list of children to recurse down later
-					children.push_front(it->path());
+	path remove_base (const path &base, const path &p) {
+		// Take the relative path from the base directory
+		// Irritatingly there is no built-in method for this
+		path tmp = p;
+		path diff;
+
+		while (!tmp.empty() && tmp != base) {
+			diff = tmp.stem() / diff;
+			tmp = tmp.parent_path();
+		}
+
+		return diff;
+	}
+
+	class manifest_printer {
+	private:
+		const path &base;
+	public:
+		manifest_printer(const path &base);
+		int print (ostream &out);
+	};
+
+	manifest_printer::manifest_printer(const path &base) : base(base) {}
+
+	int manifest_printer::print (ostream &out) {
+		// Start with the empty relative path
+		queue<path> frontier;
+		frontier.push( this->base );
+
+		int c = 0;
+
+		// As long as the frontier is non-empty, keep searching
+		while ( !frontier.empty() ) {
+			path p = frontier.front();
+			frontier.pop();
+
+			if (exists(p)) {
+				// For project directories, output and escape immediately
+				if ( is_project_directory(p) ) {
+					++c;
+					out << ( remove_base(this->base, p).string() ) << endl;
+				}
+				else {
+					// Add all children to the frontier
+					directory_iterator end_it;
+					for (directory_iterator it(p); it != end_it; ++it) {
+						if ( is_directory(it->status()) ) {
+							frontier.push(it->path());
+						}
+					}
 				}
 			}
-			// We've listed all the directories. Time to start searching them.
-			int c = 0;
-			for (auto it = children.begin(); it != children.end(); ++it) {
-				c += print_manifest(*it, out);
-			}
-			// And that's it, we've recursed and counted all the projects
-			return c;
 		}
+
+		return c;
 	}
 }
 
 int main(int argc, char *argv[])
 {
+	for (int i = 1; i < argc; i++) {
+	}
 	if (argc < 2) {
-		cout << "usage: " << argv[0] << " /path/to/directory" << endl;
+		std::cout << "usage: " << argv[0] << " /path/to/directory" << std::endl;
 		return 1;
 	}
 	boost::filesystem::path projDir(argv[1]);
-	manifest::print_manifest(projDir, cout);
+
+	auto m = manifest::manifest_printer(projDir);
+	m.print(std::cout);
 }
