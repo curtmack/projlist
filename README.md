@@ -10,9 +10,15 @@ The build process is rudimentary, but functional.
 
 ### Prerequisites
 
-* Development headers and binaries for boostlib. (Ubuntu/Debian APT package name: `libboost-all-dev`)
+* Development headers and binaries for boost/filesystem. (Ubuntu/Debian APT package name: `libboost-filesystem-dev`)
 * A C++ compiler compatible with the C++11 standard. (`g++` with the `-std=c++11` switch meets this requirement)
 * GNU make
+
+#### Why boostlib?
+
+C++17 will finally be adding a standard filesystem library (in fact, they actually just standardized the boost filesystem library). However, in C and in previous versions of C++, there was no standard way to iterate over files in a directory, i.e. everything this program does.
+
+Since C++17 support is limited at the moment, this program will continue to use boost/filesystem for the foreseeable future.
 
 ### Build instructions
 
