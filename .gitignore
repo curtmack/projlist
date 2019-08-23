@@ -1,2 +1,11 @@
-projlist
-*.bak
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+build-aux/
+config.log
+config.status
+configure
+src/.deps/
+src/config.h
+src/stamp-h*
