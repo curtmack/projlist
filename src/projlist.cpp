@@ -8,6 +8,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include "config.h"
+
 namespace manifest
 {
 	using namespace std;
@@ -89,9 +91,8 @@ namespace manifest
 
 int main(int argc, char *argv[])
 {
-	for (int i = 1; i < argc; i++) {
-	}
 	if (argc < 2) {
+    std::cout << PACKAGE_STRING << " <" << PACKAGE_URL << ">" << std::endl;
 		std::cout << "usage: " << argv[0] << " /path/to/directory" << std::endl;
 		return 1;
 	}
@@ -99,4 +100,5 @@ int main(int argc, char *argv[])
 
 	auto m = manifest::manifest_printer(projDir);
 	m.print(std::cout);
+  return 0;
 }
