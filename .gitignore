@@ -6,6 +6,9 @@ build-aux/
 config.log
 config.status
 configure
+projlist
+src/.dirstamp
 src/.deps/
+src/*.o
 src/config.h
 src/stamp-h*
