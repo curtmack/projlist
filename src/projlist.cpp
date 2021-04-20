@@ -38,7 +38,7 @@ namespace manifest
 		path diff;
 
 		while (!tmp.empty() && tmp != base) {
-			diff = tmp.stem() / diff;
+			diff = tmp.filename() / diff;
 			tmp = tmp.parent_path();
 		}
 
