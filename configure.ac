@@ -15,8 +15,8 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
 # Check for Boost
-AX_BOOST_BASE([1.65], AC_MSG_ERROR([*** Boost >= 1.65 is required, but was not found.]), )
-AX_BOOST_SYSTEM([1.65], AC_MSG_ERROR([*** Boost System >= 1.65 is required, but was not found.]), )
-AX_BOOST_FILESYSTEM([1.65], AC_MSG_ERROR([*** Boost Filesystem >= 1.65 is required, but was not found.]), )
+AX_BOOST_BASE([1.65], [], [AC_MSG_ERROR([*** Boost >= 1.65 is required, but was not found.])], )
+AX_BOOST_SYSTEM([1.65], [], [AC_MSG_ERROR([*** Boost System >= 1.65 is required, but was not found.])], )
+AX_BOOST_FILESYSTEM([1.65], [], [AC_MSG_ERROR([*** Boost Filesystem >= 1.65 is required, but was not found.])], )
 
 AC_OUTPUT
