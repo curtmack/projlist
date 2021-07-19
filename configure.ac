@@ -1,4 +1,4 @@
-AC_INIT([projlist], [1.1.1], [curtis@mackie.ninja],
+AC_INIT([projlist], [1.1.2], [curtis@mackie.ninja],
         [projlist], [https://github.com/curtmack/projlist])
 
 AC_PREREQ([2.69])
